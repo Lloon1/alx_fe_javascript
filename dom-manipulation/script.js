@@ -211,4 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createAddQuoteForm();
     const selectedCategory = document.getElementById('categoryFilter').value;
     updateDisplayedQuotes(selectedCategory);
+
+    // Set up periodic syncing with server
+    setInterval(syncQuotes, 60000); // Sync every 60 seconds
 });
