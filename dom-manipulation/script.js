@@ -67,9 +67,28 @@ function addQuote() {
 
 // Function to filter quotes based on selected category
 function filterQuotes() {
-    const categoryFilter = document.getElementById('categoryFilter').value;
-    localStorage.setItem('categoryFilter', categoryFilter);
-    showRandomQuote();
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    localStorage.setItem('categoryFilter', selectedCategory);
+    updateDisplayedQuotes(selectedCategory);
+}
+
+// Function to update the displayed quotes based on the selected category
+function updateDisplayedQuotes(selectedCategory) {
+    const filteredQuotes = selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
+
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    quoteDisplay.innerHTML = '';
+
+    if (filteredQuotes.length === 0) {
+        quoteDisplay.innerHTML = 'No quotes available.';
+        return;
+    }
+
+    filteredQuotes.forEach(quote => {
+        const quoteElement = document.createElement('p');
+        quoteElement.textContent = `"${quote.text}" - ${quote.category}`;
+        quoteDisplay.appendChild(quoteElement);
+    });
 }
 
 // Function to export quotes to a JSON file
@@ -102,9 +121,13 @@ function importFromJsonFile(event) {
 // Event listener for "Show New Quote" button
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
+// Event listener for category filter dropdown
+document.getElementById('categoryFilter').addEventListener('change', filterQuotes);
+
 // Load quotes and category filter from local storage on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadQuotes();
     populateCategories();
-    showRandomQuote();
+    const selectedCategory = document.getElementById('categoryFilter').value;
+    updateDisplayedQuotes(selectedCategory);
 });
