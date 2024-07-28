@@ -47,6 +47,23 @@ function showRandomQuote() {
     document.getElementById('quoteDisplay').innerHTML = `"${quote.text}" - ${quote.category}`;
 }
 
+// Function to post a new quote to the server
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quote)
+        });
+        const data = await response.json();
+        console.log('Posted to server:', data);
+    } catch (error) {
+        console.error('Error posting quote to server:', error);
+    }
+}
+
 // Function to add a new quote
 function addQuote() {
     const quoteText = document.getElementById('newQuoteText').value.trim();
@@ -60,6 +77,10 @@ function addQuote() {
         filterQuotes();
         document.getElementById('newQuoteText').value = '';
         document.getElementById('newQuoteCategory').value = '';
+
+        // Post the new quote to the server
+        postQuoteToServer(newQuote);
+
         alert('Quote added successfully!');
     } else {
         alert('Please enter both quote text and category.');
