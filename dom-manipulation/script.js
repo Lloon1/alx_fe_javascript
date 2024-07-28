@@ -57,12 +57,38 @@ function addQuote() {
         quotes.push(newQuote);
         saveQuotes();
         populateCategories();
+        filterQuotes();
         document.getElementById('newQuoteText').value = '';
         document.getElementById('newQuoteCategory').value = '';
         alert('Quote added successfully!');
     } else {
         alert('Please enter both quote text and category.');
     }
+}
+
+// Function to create the form for adding new quotes
+function createAddQuoteForm() {
+    const formContainer = document.createElement('div');
+
+    const quoteInput = document.createElement('input');
+    quoteInput.id = 'newQuoteText';
+    quoteInput.type = 'text';
+    quoteInput.placeholder = 'Enter a new quote';
+
+    const categoryInput = document.createElement('input');
+    categoryInput.id = 'newQuoteCategory';
+    categoryInput.type = 'text';
+    categoryInput.placeholder = 'Enter quote category';
+
+    const addButton = document.createElement('button');
+    addButton.textContent = 'Add Quote';
+    addButton.onclick = addQuote;
+
+    formContainer.appendChild(quoteInput);
+    formContainer.appendChild(categoryInput);
+    formContainer.appendChild(addButton);
+
+    document.body.appendChild(formContainer);
 }
 
 // Function to filter quotes based on selected category
@@ -113,6 +139,7 @@ function importFromJsonFile(event) {
         quotes.push(...importedQuotes);
         saveQuotes();
         populateCategories();
+        filterQuotes();
         alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
@@ -128,6 +155,7 @@ document.getElementById('categoryFilter').addEventListener('change', filterQuote
 document.addEventListener('DOMContentLoaded', () => {
     loadQuotes();
     populateCategories();
+    createAddQuoteForm();
     const selectedCategory = document.getElementById('categoryFilter').value;
     updateDisplayedQuotes(selectedCategory);
 });
