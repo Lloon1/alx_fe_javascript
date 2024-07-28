@@ -145,11 +145,32 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
 }
 
+// Function to sync quotes with server
+async function syncQuotes() {
+    try {
+        // Fetch existing quotes from the server
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const serverQuotes = await response.json();
+
+        // Combine server quotes with local quotes, giving preference to server data
+        quotes = [...new Set([...serverQuotes, ...quotes])];
+        saveQuotes();
+        populateCategories();
+        filterQuotes();
+        alert('Quotes synced successfully!');
+    } catch (error) {
+        console.error('Error syncing quotes:', error);
+    }
+}
+
 // Event listener for "Show New Quote" button
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 
 // Event listener for category filter dropdown
 document.getElementById('categoryFilter').addEventListener('change', filterQuotes);
+
+// Event listener for sync quotes button
+document.getElementById('syncQuotes').addEventListener('click', syncQuotes);
 
 // Load quotes and category filter from local storage on page load
 document.addEventListener('DOMContentLoaded', () => {
