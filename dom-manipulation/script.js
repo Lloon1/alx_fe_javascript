@@ -185,14 +185,30 @@ async function fetchQuotesFromServer() {
 async function syncQuotes() {
     try {
         const serverQuotes = await fetchQuotesFromServer();
-        quotes = [...new Set([...serverQuotes, ...quotes])];
-        saveQuotes();
-        populateCategories();
-        filterQuotes();
-        alert('Quotes synced successfully!');
+        const newQuotes = serverQuotes.filter(sq => !quotes.some(lq => lq.text === sq.text && lq.category === sq.category));
+        if (newQuotes.length > 0) {
+            quotes.push(...newQuotes);
+            saveQuotes();
+            populateCategories();
+            filterQuotes();
+            showNotification('Quotes synced with server!');
+        }
     } catch (error) {
         console.error('Error syncing quotes:', error);
+        showNotification('Error syncing quotes with server!');
     }
+}
+
+// Function to show notifications
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 // Event listener for "Show New Quote" button
