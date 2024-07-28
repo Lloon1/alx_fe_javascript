@@ -145,14 +145,25 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
 }
 
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const serverQuotes = await response.json();
+        return serverQuotes.map(quote => ({
+            text: quote.title,
+            category: 'Server'
+        }));
+    } catch (error) {
+        console.error('Error fetching quotes from server:', error);
+        return [];
+    }
+}
+
 // Function to sync quotes with server
 async function syncQuotes() {
     try {
-        // Fetch existing quotes from the server
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        const serverQuotes = await response.json();
-
-        // Combine server quotes with local quotes, giving preference to server data
+        const serverQuotes = await fetchQuotesFromServer();
         quotes = [...new Set([...serverQuotes, ...quotes])];
         saveQuotes();
         populateCategories();
